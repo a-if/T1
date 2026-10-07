@@ -1,0 +1,40 @@
+name = "auto-reaction-bot"
+main = "api/worker.js"
+compatibility_date = "2026-10-02"
+
+# Cloudflare D1 database for bot data/settings.
+# - One-click "Deploy to Cloudflare" provisions this automatically.
+# - Manual: run `npx wrangler d1 create reaction-bot` and paste the
+#   returned database_id below, then `npx wrangler deploy`.
+[[d1_databases]]
+binding = "DB"
+database_name = "reaction-bot"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# Queue for broadcast jobs (keeps each Worker invocation small).
+[[queues.producers]]
+binding = "BROADCAST_QUEUE"
+queue = "broadcast-queue"
+
+[[queues.consumers]]
+queue = "broadcast-queue"
+max_batch_size = 1
+max_concurrency = 1
+max_retries = 1
+
+[vars]
+BOT_USERNAME = ""
+EMOJI_LIST = "👍❤🔥🥰👏😁🎉🤩🙏👌🕊😍🐳❤‍🔥💯⚡🏆"
+RANDOM_LEVEL = "0"
+RESTRICTED_CHATS = ""
+ADMIN_IDS = ""
+UPDATES_URL = "https://t.me/PythonBotz"
+SUPPORT_URL = ""
+START_ANIMATION = ""
+DONATE_ANIMATION = ""
+LOG_LEVEL = "info"
+AUTO_SET_WEBHOOK = "true"
+
+# BOT_TOKEN is intentionally not committed as a plain variable.
+# One-click deploy: enter it as a secret in the deploy flow.
+# Manual: `npx wrangler secret put BOT_TOKEN`
